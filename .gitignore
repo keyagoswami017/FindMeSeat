@@ -1,0 +1,93 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+# IntelliJ IDEA-specific files
+.idea/
+out/
+
+# Ignore Maven's target directory
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Ignore logs
+logs/
+*.log
+*.log.*
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
+
+# Ignore build artifacts
+*.war
+*.jar
+
+# Ignore Spring Boot files
+bin/
+BOOT-INF/
+META-INF/
+org/
+
+# Ignore configuration files
+application.properties
+application.yml
+.env
+
+# Ignore PostgreSQL database files (if any dumps are generated)
+*.sql
+*.dump
+
+# Ignore temporary files
+*.swp
+*.swo
+*.bak
+
+# Ignore Lombok generated files (if applicable)
+lombok.config
+
+# Ignore IDE-specific plugin folders
+*.class
+
+# Ignore JetBrains workspace settings
+*.idea/workspace.xml
+*.idea/tasks.xml
+*.idea/dictionaries
+*.idea/libraries/
+
+# Ignore node_modules (if using frontend with JS/React)
+node_modules/
+dist/
