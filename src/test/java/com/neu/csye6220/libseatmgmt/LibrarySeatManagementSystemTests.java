@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.neu.csye6220.libseatmgmt;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
