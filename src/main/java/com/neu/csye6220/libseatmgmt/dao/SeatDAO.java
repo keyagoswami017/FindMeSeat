@@ -15,7 +15,7 @@ import java.util.List;
 public class SeatDAO extends BaseDAO implements ISeatDAO {
 
     @Override
-    public void saveSeat(Seat seat){
+    public void createSeat(Seat seat){
         // Implementation to save seat to the database
         try{
             begin();
@@ -23,7 +23,7 @@ public class SeatDAO extends BaseDAO implements ISeatDAO {
             commit();
         } catch (HibernateException e) {
             rollback();
-            throw new DataAccessException(" Unable to save Seat for library, Try Again!! ",e);
+            throw new DataAccessException(" Unable to create Seat for library, Try Again!! ",e);
         }
     }
 

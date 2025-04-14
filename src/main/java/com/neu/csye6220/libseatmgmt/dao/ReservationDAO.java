@@ -16,11 +16,11 @@ import java.util.List;
 public class ReservationDAO extends BaseDAO implements IReservationDAO {
 
     @Override
-    public void saveReservation(Reservation reservation){
+    public void createReservation(Reservation reservation){
             // Implementation to save reservation
             try{
                 begin();
-                getSession().merge(reservation);
+                getSession().save(reservation);
                 commit();
             }catch (HibernateException e){
                 rollback();
@@ -117,5 +117,55 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
             throw new DataAccessException("Unable to delete all Reservations", e);
         }
 
+    }
+
+    @Override
+    public boolean isSeatAvailable(Long seatId, String startTime, String endTime) {
+        return false;
+    }
+
+    @Override
+    public List<Reservation> getReservationsBySeatId(Long seatId) {
+        // Implementation to get reservations by Seat ID
+        try {
+            return getSession()
+                    .createQuery("FROM Reservation WHERE seat.id = :seatId", Reservation.class)
+                    .setParameter("userId", seatId)
+                    .list();
+        } catch (HibernateException e) {
+            throw new DataAccessException("Error fetching Reservations by Seat ID", e);
+        }
+    }
+
+    @Override
+    public void deleteReservationBySeatId(Long seatId) {
+        // Implementation to delete reservation by seat ID
+        try {
+            begin();
+            Reservation reservation = getSession().find(Reservation.class, seatId);
+            if (reservation != null) {
+                getSession().remove(reservation);
+            }
+            commit();
+        } catch (HibernateException e) {
+            rollback();
+            throw new DataAccessException("Unable to delete Reservation with Seat ID: " + seatId, e);
+        }
+    }
+
+    @Override
+    public void deleteReservationByUserId(Long userId) {
+        // Implementation to delete reservation by user ID
+        try {
+            begin();
+            Reservation reservation = getSession().find(Reservation.class, userId);
+            if (reservation != null) {
+                getSession().remove(reservation);
+            }
+            commit();
+        } catch (HibernateException e) {
+            rollback();
+            throw new DataAccessException("Unable to delete Reservation with User ID: " + userId, e);
+        }
     }
 }

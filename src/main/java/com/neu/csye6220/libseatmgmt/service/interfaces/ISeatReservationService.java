@@ -1,11 +1,11 @@
-package com.neu.csye6220.libseatmgmt.dao.interfaces;
+package com.neu.csye6220.libseatmgmt.service.interfaces;
 
 import com.neu.csye6220.libseatmgmt.model.Reservation;
 
 import java.util.List;
 
-public interface IReservationDAO {
-    void createReservation(Reservation reservation);
+public interface ISeatReservationService {
+    void createReservation(Long userId, Long seatId, String startTime, String endTime);
     void updateReservation(Reservation reservation);
     List<Reservation> getAllReservations();
     boolean isSeatAvailable(Long seatId, String startTime, String endTime);

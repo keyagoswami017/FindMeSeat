@@ -3,6 +3,7 @@ package com.neu.csye6220.libseatmgmt.dao;
 import com.neu.csye6220.libseatmgmt.dao.interfaces.IUserDAO;
 import com.neu.csye6220.libseatmgmt.exception.DataAccessException;
 import com.neu.csye6220.libseatmgmt.model.User;
+import com.neu.csye6220.libseatmgmt.model.Admin;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public class UserDAO extends BaseDAO implements IUserDAO {
 
     @Override
-    public void saveUser(User user) {
+    public void createUser(User user) {
         // Implementation to save user to the database
         try{
             begin();
@@ -26,12 +27,13 @@ public class UserDAO extends BaseDAO implements IUserDAO {
         }
     }
     @Override
-    public void updateUser(User user) {
+    public User updateUser(User user) {
         // Implementation to update user in the database
         try{
             begin();
             getSession().merge(user);
             commit();
+            return user;
         }catch(HibernateException e){
             rollback();
             throw new DataAccessException("Error updating User", e);
@@ -40,7 +42,7 @@ public class UserDAO extends BaseDAO implements IUserDAO {
     @Override
     public void registerUser(User user)  {
         // Implementation to delete user from the database
-        saveUser(user);
+        createUser(user);
     }
     @Override
     public User getUserById(Long id)   {
@@ -55,15 +57,35 @@ public class UserDAO extends BaseDAO implements IUserDAO {
     public User getUserByEmail(String email)   {
         // Implementation to get user by email from the database
        try{
+
            Session session = getSession();
-           CriteriaBuilder builder = session.getCriteriaBuilder();
-           CriteriaQuery<User> query = builder.createQuery(User.class);
-           Root<User> root = query.from(User.class);
-           query.select(root).where(builder.equal(root.get("email"), email));
-              return session.createQuery(query).uniqueResult();
+              return session.createQuery("FROM User WHERE email = :email", User.class)
+                        .setParameter("email", email)
+                      .uniqueResultOptional()
+                        .orElse(null);
 
        } catch (HibernateException e) {
+              rollback();
            throw new DataAccessException("Error Fetching User by Email "+ email, e);
        }
+    }
+    @Override
+    public boolean emailExists(String email){
+        try {
+            begin();
+            Long count = getSession().createQuery(
+                            "SELECT COUNT(*) FROM User WHERE email = :email", Long.class)
+                    .setParameter("email", email)
+                    .uniqueResult();
+
+            count += getSession().createQuery(
+                            "SELECT COUNT(*) FROM Admin WHERE email = :email", Long.class)
+                    .setParameter("email", email)
+                    .uniqueResult();
+            commit();
+            return count > 0;
+        }catch (HibernateException e){
+            return false;
+        }
     }
 }

@@ -31,20 +31,29 @@ public class HibernateConfig {
         settings.put("hibernate.show_sql", "true");
         settings.put("hibernate.format_sql", "true");
 
+        //settings.put("hibernate.current_session_context_class", "thread");
+
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(settings)
                 .build();
 
         MetadataSources metadataSources = new MetadataSources(serviceRegistry);
         // Add your entity classes here
+        metadataSources.addPackage("com.neu.csye6220.libseatmgmt.model");
         metadataSources.addAnnotatedClass(User.class);
         metadataSources.addAnnotatedClass(Admin.class);
         metadataSources.addAnnotatedClass(Seat.class);
         metadataSources.addAnnotatedClass(Reservation.class);
 
         Metadata metadata = metadataSources.buildMetadata();
-        return metadata.buildSessionFactory();
 
+        //System.out.println("Adding entity: " + User.class.getName());
+       /* metadata.getEntityBindings().forEach(persistentClass -> {
+            System.out.println("Mapped entity: " + persistentClass.getMappedClass().getName() + " to table: " + persistentClass.getMappedClass().getClassLoader());
+        });*/
+
+        SessionFactory sessionFactory = metadata.getSessionFactoryBuilder().build();
+        return sessionFactory;
     }
 
 }
