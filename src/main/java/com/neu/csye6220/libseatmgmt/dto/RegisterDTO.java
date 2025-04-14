@@ -28,15 +28,7 @@ public class RegisterDTO {
 
     @NotBlank(message = "Phone number is required")
     @Size(min = 10, max = 12, message = "Phone number must be between 10 and 12 digits")
-    private int phone;
-
-    @NotBlank(message = "Role is required")
-    @Size(min = 2, max = 20, message = "Role must be between 2 and 20 characters")
-    @Pattern(
-            regexp = "^(admin|user)$",
-            message = "Role must be either 'admin' or 'user'"
-    )
-    private String role;
+    private String phone;
 
     public String getFirstName() {
         return firstName;
@@ -66,18 +58,12 @@ public class RegisterDTO {
         this.password = password;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public String getRole() {
-        return role;
-    }
-    public void setRole(String role) {
-        this.role = role;
-    }
 
 }

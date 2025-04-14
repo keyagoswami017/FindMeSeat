@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 public class AdminDAO extends BaseDAO implements IAdminDAO {
 
     @Override
-    public void saveAdmin(Admin admin){
+    public void createAdmin(Admin admin){
         // Implementation to save admin to the database
         try{
             begin();
@@ -29,12 +29,13 @@ public class AdminDAO extends BaseDAO implements IAdminDAO {
     }
 
     @Override
-    public void updateAdmin(Admin admin){
+    public Admin updateAdmin(Admin admin){
         // Implementation to update admin in the database
         try{
             begin();
             getSession().merge(admin);
             commit();
+            return admin;
         }catch(HibernateException e){
             rollback();
             throw new DataAccessException("Error updating Admin", e);
@@ -56,13 +57,12 @@ public class AdminDAO extends BaseDAO implements IAdminDAO {
         // Implementation to get admin by email from the database
         try{
             Session session = getSession();
-            CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery<Admin> query = builder.createQuery(Admin.class);
-            Root<Admin> root = query.from(Admin.class);
-            query.select(root).where(builder.equal(root.get("email"), email));
-            return session.createQuery(query).uniqueResult();
+            return session.createQuery("FROM Admin WHERE email = :email", Admin.class)
+                    .setParameter("email", email)
+                    .getSingleResultOrNull();
 
         } catch (HibernateException e) {
+            rollback();
             throw new DataAccessException("Error Fetching Admin by Email "+ email, e);
         }
     }

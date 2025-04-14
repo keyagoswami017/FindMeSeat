@@ -10,11 +10,11 @@ import java.sql.Timestamp;
 public class Reservation extends BaseEntity{
 
     @ManyToOne
-    @JoinColumn(name = "id" , nullable = false)
+    @JoinColumn(name = "uid" , nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "id" , nullable = false)
+    @JoinColumn(name = "sid" , nullable = false)
     private Seat seat;
 
     @Column(name = "start_time", nullable = false)

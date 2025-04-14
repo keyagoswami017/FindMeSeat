@@ -21,8 +21,8 @@ public class User extends BaseEntity {
     @Column(name = "password", nullable = false, length = 200)
     private String password;
 
-    @Column(name = "phone", length = 12)
-    private int phone;
+    @Column(name = "phone", nullable = false, length = 12)
+    private String phone;
 
     public String getFirstName() {
         return firstName;
@@ -52,10 +52,10 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 }

@@ -3,9 +3,10 @@ package com.neu.csye6220.libseatmgmt.dao.interfaces;
 import com.neu.csye6220.libseatmgmt.model.User;
 
 public interface IUserDAO {
-    void saveUser(User user);
-    void updateUser(User user);
+    void createUser(User user);
+    User updateUser(User user);
     void registerUser(User user);
     User getUserById(Long id);
     User getUserByEmail(String email);
+    boolean emailExists(String email);
 }

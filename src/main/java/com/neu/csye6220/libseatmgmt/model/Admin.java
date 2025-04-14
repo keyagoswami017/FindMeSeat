@@ -22,7 +22,7 @@ public class Admin extends BaseEntity {
     private String password;
 
     @Column(name = "phone", length = 12)
-    private int phone;
+    private String phone;
 
     public String getFirstName() {
         return firstName;
@@ -52,10 +52,10 @@ public class Admin extends BaseEntity {
         this.password = password;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 }
