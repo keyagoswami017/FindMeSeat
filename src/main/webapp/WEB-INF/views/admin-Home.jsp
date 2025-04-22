@@ -38,7 +38,7 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">Manage Seats</h5>
                     <p class="card-text">Add, edit, or delete seats.</p>
-                    <a href="/seats" class="btn btn-primary">Seats</a>
+                    <a href="/seat/dashboard" class="btn btn-primary">Seats</a>
                 </div>
             </div>
         </div>

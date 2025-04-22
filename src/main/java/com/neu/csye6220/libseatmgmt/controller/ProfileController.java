@@ -2,7 +2,6 @@ package com.neu.csye6220.libseatmgmt.controller;
 
 import com.neu.csye6220.libseatmgmt.model.Admin;
 import com.neu.csye6220.libseatmgmt.model.User;
-import com.neu.csye6220.libseatmgmt.service.AdminService;
 import com.neu.csye6220.libseatmgmt.service.interfaces.IAdminService;
 import com.neu.csye6220.libseatmgmt.service.interfaces.IUserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,7 +28,7 @@ public class ProfileController {
     public String getProfile(HttpSession session,Model model) {
         Integer userId = (Integer) session.getAttribute("userId");
         Integer adminId = (Integer) session.getAttribute("adminId");
-        if(userId == null || adminId == null) {
+        if(userId == null && adminId == null) {
             return "redirect:/login";
         }
 
