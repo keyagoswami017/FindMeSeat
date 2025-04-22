@@ -15,7 +15,7 @@ public class Seat extends BaseEntity{
     @Column(name = "floor_number", nullable = false)
     private int floorNumber;
     @Column(name = "is_available", nullable = false)
-    private boolean isAvailable;
+    private boolean available;
 
     public String getSeatNumber() {
         return seatNumber;
@@ -33,12 +33,16 @@ public class Seat extends BaseEntity{
         this.seatType = seatType;
     }
 
+    public int getFloorNumber() {return floorNumber;}
+
+    public void setFloorNumber(int floorNumber) {this.floorNumber = floorNumber;}
+
     public boolean isAvailable() {
-        return isAvailable;
+        return available;
     }
 
     public void setAvailable(boolean available) {
-        isAvailable = available;
+        this.available = available;
     }
 
 
