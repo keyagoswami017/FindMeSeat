@@ -10,4 +10,5 @@ public interface ISeatDAO {
     Seat getSeatById(Long id);
     List<Seat> getAllSeats();
     void deleteSeat(Long id);
+    List<Seat> getSeatsByType(String seatType);
 }

@@ -45,4 +45,10 @@ public class SeatService implements ISeatService {
         List<Seat> seats = seatDAO.getAllSeats();
         return seats;
     }
+
+    @Override
+    public List<Seat> getSeatsByType(String seatType) {
+        return seatDAO.getSeatsByType(seatType);
+    }
+
 }

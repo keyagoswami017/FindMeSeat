@@ -3,6 +3,7 @@ package com.neu.csye6220.libseatmgmt.dao;
 import com.neu.csye6220.libseatmgmt.dao.interfaces.IReservationDAO;
 import com.neu.csye6220.libseatmgmt.exception.DataAccessException;
 import com.neu.csye6220.libseatmgmt.model.Reservation;
+import com.neu.csye6220.libseatmgmt.model.Seat;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -10,6 +11,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -120,8 +124,25 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
     }
 
     @Override
-    public boolean isSeatAvailable(Long seatId, String startTime, String endTime) {
-        return false;
+    public boolean isSeatAvailable(Long seatId, Timestamp startTime, Timestamp endTime) {
+        try {
+            // Check if the seat is available for the given time range
+            begin();
+            String hql = "FROM Reservation r WHERE r.seat.id = :seatId " +
+                    "AND r.startDateTime < :endTime AND r.endDateTime > :startTime";
+
+            List<?> overlapping = getSession().createQuery(hql)
+                    .setParameter("seatId", seatId)
+                    .setParameter("startTime", startTime)
+                    .setParameter("endTime", endTime)
+                    .list();
+            commit();
+
+            return overlapping.isEmpty();  // true means available
+        } catch (Exception e) {
+            rollback();
+            throw new DataAccessException("Error checking seat availability", e);
+        }
     }
 
     @Override
@@ -133,6 +154,7 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
                     .setParameter("userId", seatId)
                     .list();
         } catch (HibernateException e) {
+            System.out.println("Error found " + e.getMessage());
             throw new DataAccessException("Error fetching Reservations by Seat ID", e);
         }
     }
@@ -168,4 +190,99 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
             throw new DataAccessException("Unable to delete Reservation with User ID: " + userId, e);
         }
     }
+
+    @Override
+    public List<Seat> getAvailableSeats(String seatType, Timestamp startTime, Timestamp endTime){
+        // Implementation to get available seats
+        try {
+            begin();
+            return getSession()
+                    .createQuery("""
+                         FROM Seat s
+                            WHERE s.seatType = :seatType 
+                         AND NOT EXISTS (
+                                SELECT 1 FROM Reservation r 
+                                    WHERE r.seat.id = s.id 
+                                        AND r.startDateTime < :endTime 
+                                        AND r.endDateTime > :startTime
+                                        )
+                        """, Seat.class)
+                    .setParameter("seatType", seatType)
+                    .setParameter("startTime", startTime)
+                    .setParameter("endTime", endTime)
+                    .list();
+        } catch (HibernateException e) {
+            throw new DataAccessException("Error fetching available Seats", e);
+        }
+    }
+
+    @Override
+    public List<Reservation> getReservationsBetween(Timestamp start, Timestamp end){
+        try {
+            begin();
+            return getSession().createQuery(
+                            "FROM Reservation r WHERE r.startDateTime >= :start AND r.startDateTime < :end", Reservation.class)
+                    .setParameter("start", start)
+                    .setParameter("end", end)
+                    .list();
+        } catch (HibernateException e) {
+            throw new DataAccessException("Failed to fetch reservations between dates", e);
+        }
+    }
+
+    @Override
+    public List<Reservation> filterReservations(String seatType, Integer floor, Timestamp start, Timestamp end){
+        try {
+            begin();
+            StringBuilder hql = new StringBuilder("FROM Reservation r WHERE r.startDateTime >= :start AND r.endDateTime <= :end");
+
+            if (seatType != null && !seatType.isEmpty()) {
+                hql.append(" AND r.seat.seatType = :seatType");
+            }
+            if (floor != null) {
+                hql.append(" AND r.seat.floor = :floor");
+            }
+
+            var query = getSession().createQuery(hql.toString(), Reservation.class)
+                    .setParameter("start", start)
+                    .setParameter("end", end);
+
+            if (seatType != null && !seatType.isEmpty()) {
+                query.setParameter("seatType", seatType);
+            }
+            if (floor != null) {
+                query.setParameter("floor", floor);
+            }
+
+            return query.list();
+
+        } catch (HibernateException e) {
+            throw new DataAccessException("Failed to filter reservations", e);
+        }
+    }
+
+    @Override
+    public boolean isSeatAvailableForUpdate(Long seatId, Timestamp startTime, Timestamp endTime, Long excludeReservationId){
+        try {
+            begin();
+            String hql = "FROM Reservation r WHERE r.seat.id = :seatId " +
+                    "AND r.startDateTime < :endTime AND r.endDateTime > :startTime " +
+                    "AND r.id <> :excludeId";
+
+            List<Reservation> overlapping = getSession().createQuery(hql, Reservation.class)
+                    .setParameter("seatId", seatId)
+                    .setParameter("startTime", startTime)
+                    .setParameter("endTime", endTime)
+                    .setParameter("excludeId", excludeReservationId)
+                    .list();
+            commit();
+            return overlapping.isEmpty();  // True = available
+        } catch (Exception e) {
+            rollback();
+            throw new DataAccessException("Error checking seat availability for update", e);
+        }
+    }
+
+
+
 }

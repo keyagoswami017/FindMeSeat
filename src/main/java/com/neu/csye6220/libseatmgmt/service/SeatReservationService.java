@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -32,7 +33,7 @@ public class SeatReservationService implements ISeatReservationService {
     }
 
     @Override
-    public void createReservation(Long userId, Long seatId, String startTime, String endTime) {
+    public void createReservation(Long userId, Long seatId, Timestamp startTime, Timestamp endTime) {
         // Get the information of the user and seat
         User user = userDAO.getUserById(userId);
         Seat seat = seatDAO.getSeatById(seatId);
@@ -47,21 +48,13 @@ public class SeatReservationService implements ISeatReservationService {
         }
 
         // Create a new reservation
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Timestamp startTimestamp = new Timestamp(sdf.parse(startTime).getTime());
-            Timestamp endTimestamp = new Timestamp(sdf.parse(endTime).getTime());
-
             Reservation reservation = new Reservation();
             reservation.setUser(user);
             reservation.setSeat(seat);
-            reservation.setStartDateTime(startTimestamp);
-            reservation.setEndDateTime(endTimestamp);
+            reservation.setStartDateTime(startTime);
+            reservation.setEndDateTime(endTime);
             reservation.setReservedStatus("Reserved");
             reservationDAO.createReservation(reservation);
-        }catch (HibernateException | ParseException e){
-            throw new DataAccessException("Error creating reservation", e);
-        }
 
     }
 
@@ -86,7 +79,7 @@ public class SeatReservationService implements ISeatReservationService {
     }
 
     @Override
-    public boolean isSeatAvailable(Long seatId, String startTime, String endTime) {
+    public boolean isSeatAvailable(Long seatId, Timestamp startTime, Timestamp endTime) {
         // Check if the seat is available for the given time frame
         try {
             return reservationDAO.isSeatAvailable(seatId, startTime, endTime);
@@ -164,4 +157,41 @@ public class SeatReservationService implements ISeatReservationService {
             throw new DataAccessException("Error deleting all reservations", e);
         }
     }
+
+    @Override
+    public List<Seat> getAvailableSeats(String seatType, Timestamp startTime, Timestamp endTime) {
+        // Get available seats for the given time frame
+        try {
+            return reservationDAO.getAvailableSeats(seatType, startTime, endTime);
+        } catch (HibernateException e) {
+            throw new DataAccessException("Error fetching available seats", e);
+        }
+    }
+
+    @Override
+    public List<Reservation> getReservationsForTodayAndTomorrow(){
+            Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+            Timestamp tomorrowEnd = Timestamp.valueOf(LocalDateTime.now().plusDays(2).withHour(0).withMinute(0).withSecond(0));
+            return reservationDAO.getReservationsBetween(now, tomorrowEnd);
+        }
+
+    @Override
+    public List<Reservation> filterReservations(String seatType, Integer floor, Timestamp start, Timestamp end) {
+         return reservationDAO.filterReservations(seatType, floor, start, end);
+    }
+
+    @Override
+    public boolean isSeatAvailableForUpdate(Long seatId, Timestamp start, Timestamp end, Long excludeReservationId){
+        try {
+            return reservationDAO.isSeatAvailableForUpdate(seatId, start, end, excludeReservationId);
+        } catch (HibernateException e) {
+            throw new DataAccessException("Error checking seat availability for update", e);
+        }
+    }
+
+
+
 }
+
+
+

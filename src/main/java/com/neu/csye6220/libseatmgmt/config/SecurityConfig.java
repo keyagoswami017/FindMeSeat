@@ -13,8 +13,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // allow form POST without token
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login","/doLogin" ,"/register","/register/**", "/css/**", "/js/**", "/images/**","/WEB-INF/views/**",
-                         "/user-Home","user-Header","/admin-Home","/admin-Header","/seat/**","seat/admin/**","/logout","/profile/**","/footer").permitAll()
+                         "/user-Home","user-Header","/admin-Home","/admin-Header","/seat/**","seat/admin/**","/reservations/user/**","/logout","/profile/**","/footer")
+                         .permitAll()
                         .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll()
+
                 );
         return http.build();
     }
