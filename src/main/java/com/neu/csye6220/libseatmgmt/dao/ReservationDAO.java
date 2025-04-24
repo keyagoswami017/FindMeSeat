@@ -22,26 +22,30 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
     @Override
     public void createReservation(Reservation reservation){
             // Implementation to save reservation
-            try{
-                begin();
-                getSession().save(reservation);
-                commit();
-            }catch (HibernateException e){
+            try {
+                 begin();
+                 getSession().save(reservation);
+                 commit();
+            } catch (HibernateException e){
                 rollback();
                 throw new DataAccessException("Error saving Reservation", e);
+            } finally {
+                close(); // <<< VERY IMPORTANT
             }
     }
 
     @Override
     public void updateReservation(Reservation reservation){
             // Implementation to update reservation
-            try{
-                begin();
-                getSession().merge(reservation);
-                commit();
-            }catch (HibernateException e){
+            try {
+                 begin();
+                 getSession().merge(reservation);
+                 commit();
+            } catch (HibernateException e){
                 rollback();
                 throw new DataAccessException("Error updating Reservation", e);
+            } finally {
+                close(); // <<< VERY IMPORTANT
             }
 
     }
@@ -49,10 +53,12 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
     @Override
     public Reservation getReservationById(Long id){
             // Implementation to get reservation by ID
-            try{
-                return getSession().get(Reservation.class, id);
+            try {
+                  return getSession().get(Reservation.class, id);
             } catch (HibernateException e) {
                 throw new DataAccessException("Error Fetching Reservation by ID "+ id, e);
+            } finally {
+                close(); // <<< VERY IMPORTANT
             }
     }
 
@@ -66,6 +72,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
                         .list();
             } catch (HibernateException e) {
                 throw new DataAccessException("Error fetching Reservations by User ID", e);
+            } finally {
+                close(); // <<< VERY IMPORTANT
             }
     }
 
@@ -86,6 +94,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
 
             } catch (HibernateException e) {
                 throw new DataAccessException("Error fetching all Reservations", e);
+            } finally {
+                close(); // <<< VERY IMPORTANT
             }
     }
 
@@ -102,6 +112,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException("Unable to delete Reservation with ID: " + id, e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -119,6 +131,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException("Unable to delete all Reservations", e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
 
     }
@@ -142,6 +156,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
         } catch (Exception e) {
             rollback();
             throw new DataAccessException("Error checking seat availability", e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -151,11 +167,13 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
         try {
             return getSession()
                     .createQuery("FROM Reservation WHERE seat.id = :seatId", Reservation.class)
-                    .setParameter("userId", seatId)
+                    .setParameter("seatId", seatId)
                     .list();
         } catch (HibernateException e) {
             System.out.println("Error found " + e.getMessage());
             throw new DataAccessException("Error fetching Reservations by Seat ID", e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -172,6 +190,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException("Unable to delete Reservation with Seat ID: " + seatId, e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -188,6 +208,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException("Unable to delete Reservation with User ID: " + userId, e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -213,6 +235,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
                     .list();
         } catch (HibernateException e) {
             throw new DataAccessException("Error fetching available Seats", e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -227,6 +251,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
                     .list();
         } catch (HibernateException e) {
             throw new DataAccessException("Failed to fetch reservations between dates", e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -258,6 +284,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
 
         } catch (HibernateException e) {
             throw new DataAccessException("Failed to filter reservations", e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -280,6 +308,8 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
         } catch (Exception e) {
             rollback();
             throw new DataAccessException("Error checking seat availability for update", e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 

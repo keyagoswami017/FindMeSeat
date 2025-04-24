@@ -44,6 +44,7 @@ public class LoginController {
             return "register";
         }
 
+
         // Check if the email already exists in either Admin/User
         if (userService.emailExists(user.getEmail())) {
             model.addAttribute("error", "Email already exists, Please try with different email");
@@ -85,8 +86,8 @@ public class LoginController {
         }
         HttpSession newSession = request.getSession(true);
         if("user".equals(user.getRole())) {
-            int userId = (int) userService.authenticate(user.getEmail(), user.getPassword()); // login for user
-            System.out.println("User ID found : " + userId);
+            // login for user
+            int userId = (int) userService.authenticate(user.getEmail(), user.getPassword());
             if(userId > 0) {
                 newSession.setAttribute("userId", userId);
                 newSession.setAttribute("role", "user");
@@ -94,8 +95,8 @@ public class LoginController {
             }
         }
         else {
-            int adminId = (int) adminService.authenticate(user.getEmail(), user.getPassword()); // login for admin
-            System.out.println("Admin ID found : " + adminId);
+            // login for admin
+            int adminId = (int) adminService.authenticate(user.getEmail(), user.getPassword());
             if (adminId > 0) {
                 newSession.setAttribute("adminId", adminId);
                 newSession.setAttribute("role", "admin");

@@ -36,7 +36,10 @@ public class BaseDAO {
     }
 
     protected void begin() {
-        getSession().beginTransaction();
+        Session session = getSession();
+        if (!session.getTransaction().isActive()) {
+            session.beginTransaction();
+        }
     }
 
     protected void commit() {

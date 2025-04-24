@@ -219,7 +219,7 @@ public class SeatReservationController {
             return "redirect:/access-denied";
 
         seatReservationService.deleteReservation(id);
-        return "redirect:/reservations/user/my";
+        return "redirect:/reservations/user";
     }
 
     @PostMapping("/save-debug")

@@ -17,36 +17,42 @@ public class SeatDAO extends BaseDAO implements ISeatDAO {
     @Override
     public void createSeat(Seat seat){
         // Implementation to save seat to the database
-        try{
-            begin();
-            getSession().persist(seat);
-            commit();
+        try {
+                begin();
+                getSession().persist(seat);
+                commit();
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException(" Unable to create Seat for library, Try Again!! ",e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
     @Override
     public void updateSeat(Seat seat){
         // Implementation to update seat in the database
-        try{
-            begin();
-            getSession().merge(seat);
-            commit();
+        try {
+                begin();
+                getSession().merge(seat);
+                commit();
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException(" Unable to update Seat, Try Again!! ",e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
     @Override
     public Seat getSeatById(Long id){
         // Implementation to get Seat by ID from the database
-        try{
-            return getSession().get(Seat.class, id);
+        try {
+              return getSession().get(Seat.class, id);
         } catch (HibernateException e) {
             throw new DataAccessException("Error Fetching Seat by ID "+ id, e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -66,22 +72,26 @@ public class SeatDAO extends BaseDAO implements ISeatDAO {
             return seats;
         } catch (HibernateException e) {
             throw new DataAccessException("Error fetching all Seats", e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
     @Override
     public void deleteSeat(Long id){
         // Implementation to delete seat from the database
-        try{
-            begin();
-            Seat seat = getSession().find(Seat.class, id);
-            if (seat != null) {
-                getSession().remove(seat);
-            }
-            commit();
+        try {
+                begin();
+                Seat seat = getSession().find(Seat.class, id);
+                if (seat != null) {
+                    getSession().remove(seat);
+                }
+                commit();
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException("Unable to delete Seat with ID: " + id, e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -99,6 +109,8 @@ public class SeatDAO extends BaseDAO implements ISeatDAO {
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException("Error fetching Seats by type: " + seatType, e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 

@@ -21,6 +21,8 @@ public class AdminDAO extends BaseDAO implements IAdminDAO {
         }catch(HibernateException e){
             rollback();
             throw new DataAccessException("Error saving Admin", e);
+        }finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -35,6 +37,8 @@ public class AdminDAO extends BaseDAO implements IAdminDAO {
         }catch(HibernateException e){
             rollback();
             throw new DataAccessException("Error updating Admin", e);
+        }finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -45,6 +49,8 @@ public class AdminDAO extends BaseDAO implements IAdminDAO {
             return getSession().get(Admin.class, id);
         } catch (HibernateException e) {
             throw new DataAccessException("Error Fetching Admin by ID "+ id, e);
+        }finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 
@@ -60,6 +66,8 @@ public class AdminDAO extends BaseDAO implements IAdminDAO {
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException("Error Fetching Admin by Email "+ email, e);
+        }finally {
+            close(); // <<< VERY IMPORTANT
         }
     }
 }
