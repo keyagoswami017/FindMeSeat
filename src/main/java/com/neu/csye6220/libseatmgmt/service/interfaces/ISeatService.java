@@ -9,5 +9,6 @@ public interface ISeatService {
     void deleteSeat(Long id);
     void updateSeat(Seat seat);
     Seat getSeatById(Long id);
+    List<Seat> getSeatsByType(String seatType);
     List<Seat> getAllSeats();
 }

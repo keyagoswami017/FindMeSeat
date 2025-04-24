@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService implements IUserService {
 
@@ -56,5 +58,11 @@ public class UserService implements IUserService {
             }
         }
         return -1;
+    }
+
+    @Override
+    public List<User> getAllUsers(){
+        // Fetch all users
+        return userDAO.getAllUsers();
     }
 }

@@ -28,7 +28,7 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">Manage Reservations</h5>
                     <p class="card-text">Add, edit, or delete your reservations.</p>
-                    <a href="/reservations" class="btn btn-primary">Reservations</a>
+                    <a href="/reservations/user" class="btn btn-primary">Reservations</a>
                 </div>
             </div>
         </div>

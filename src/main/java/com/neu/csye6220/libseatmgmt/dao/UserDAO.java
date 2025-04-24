@@ -11,6 +11,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UserDAO extends BaseDAO implements IUserDAO {
 
@@ -71,6 +73,7 @@ public class UserDAO extends BaseDAO implements IUserDAO {
     }
     @Override
     public boolean emailExists(String email){
+        // Implementation to check if email exists in the database
         try {
             begin();
             Long count = getSession().createQuery(
@@ -88,4 +91,20 @@ public class UserDAO extends BaseDAO implements IUserDAO {
             return false;
         }
     }
+
+    @Override
+    public List<User> getAllUsers(){
+        // Implementation to get all users from the database
+        try{
+            begin();
+            return getSession().createQuery("FROM User", User.class)
+                    .list();
+
+        }catch (HibernateException e){
+            rollback();
+            throw new DataAccessException("Error Fetching All Users", e);
+        }
+
+    }
+
 }

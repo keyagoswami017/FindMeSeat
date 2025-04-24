@@ -54,7 +54,7 @@ public class SeatDAO extends BaseDAO implements ISeatDAO {
     public List<Seat> getAllSeats(){
         // Implementation to get all seats from the database
         try {
-                begin();
+            begin();
             CriteriaQuery<Seat> criteriaQuery = getSession()
                     .getCriteriaBuilder()
                     .createQuery(Seat.class);
@@ -82,6 +82,23 @@ public class SeatDAO extends BaseDAO implements ISeatDAO {
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException("Unable to delete Seat with ID: " + id, e);
+        }
+    }
+
+    @Override
+    public List<Seat> getSeatsByType(String seatType){
+        // Implementation to get seats by type from the database
+        try {
+            begin();
+            List<Seat> seats = getSession()
+                    .createQuery("FROM Seat WHERE seatType = :seatType AND available = true", Seat.class)
+                    .setParameter("seatType", seatType)
+                    .getResultList();
+            commit();
+            return seats;
+        } catch (HibernateException e) {
+            rollback();
+            throw new DataAccessException("Error fetching Seats by type: " + seatType, e);
         }
     }
 
