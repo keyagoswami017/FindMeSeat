@@ -11,7 +11,6 @@
 
     <style>
         body {
-            background-image: url('<c:url value="/resources/images/Library_Chairs_red_wood.jpg"/>');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;

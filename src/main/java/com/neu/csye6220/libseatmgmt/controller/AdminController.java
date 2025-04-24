@@ -33,6 +33,9 @@ public class AdminController {
 
     @GetMapping("")
     public String showReservationDashboard(HttpSession session, Model model) {
+        System.out.println("AdminId : "+session.getAttribute("adminId"));
+        System.out.println("UserId : "+session.getAttribute("userId"));
+
         if (session.getAttribute("adminId") == null)
             return "redirect:/login";
 
@@ -42,7 +45,7 @@ public class AdminController {
     }
 
 
-  /*  @PostMapping("/filter")
+    @PostMapping("/filter")
     public String filterReservations(@RequestParam(required = false) String seatType,
                                      @RequestParam(required = false) Integer floorNumber,
                                      @RequestParam String startDateTime,
@@ -50,11 +53,16 @@ public class AdminController {
                                      HttpSession session, Model model) {
         if (session.getAttribute("adminId") == null)
             return "redirect:/login";
-            List<Reservation> filtered = seatReservationService.filterReservations(seatType,floorNumber, startDateTime, endDateTime);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        Timestamp startTimestamp = Timestamp.valueOf(LocalDateTime.parse(startDateTime, formatter));
+        Timestamp endTimestamp = Timestamp.valueOf(LocalDateTime.parse(endDateTime, formatter));
+
+            List<Reservation> filtered = seatReservationService.filterReservations(seatType,floorNumber, startTimestamp, endTimestamp);
         model.addAttribute("reservations", filtered);
         return "admin-manage-reservations";
     }
-*/
+
     @GetMapping("/seats")
     public String showAllSeats(HttpSession session, Model model) {
         if (session.getAttribute("adminId") == null)
@@ -96,7 +104,7 @@ public class AdminController {
         if (session.getAttribute("adminId") == null)
             return "redirect:/login";
         seatReservationService.deleteReservation(id);
-        return "redirect:/reservations/admin/all";
+        return "redirect:/reservations/admin";
     }
 
 }

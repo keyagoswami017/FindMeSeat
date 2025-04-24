@@ -77,8 +77,11 @@
 
                 <button type="submit" class="btn btn-primary w-100">Login</button>
             </form:form>
-            <p class="text-center mt-3">
-                Don't have an account? <a href="/register">Register here</a>.
+            <p class="text-center mt-3 text-muted">
+                <strong>Note:</strong> Only <strong>users</strong> can register. <br/>
+                Admin accounts must be created by the system.
+                <br/>
+                <a href="/register">Click here to register as a user</a>.
             </p>
         </div>
     </div>
