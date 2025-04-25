@@ -27,7 +27,6 @@
                 <option>4-Seater</option>
                 <option>5-Seater</option>
                 <option>6-Seater</option>
-                <option>1-Seater-Aisle</option>
                 <option>1-Seater-Window</option>
                 <option>2-Seater-Aisle</option>
                 <option>2-Seater-Window</option>
