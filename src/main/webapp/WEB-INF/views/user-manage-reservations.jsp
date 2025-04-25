@@ -21,6 +21,11 @@
         <div class="alert alert-danger text-center">${error}</div>
     </c:if>
 
+    <div class="text-center mb-4">
+        <a href="${pageContext.request.contextPath}/reservations/user" class="btn btn-outline-primary me-2">Current Reservations</a>
+        <a href="${pageContext.request.contextPath}/reservations/user/past" class="btn btn-outline-secondary">Past Reservations (Last 7 Days)</a>
+    </div>
+
     <c:choose>
         <c:when test="${not empty reservations}">
             <div class="row">

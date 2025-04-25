@@ -40,6 +40,12 @@ public class SeatController {
     public String createSeat(@Valid @ModelAttribute("seat") SeatDTO seatDTO, BindingResult result, HttpSession session, Model model){
         if(session.getAttribute("adminId") == null)
             return "redirect:/login";
+
+        if(seatService.seatExists(seatDTO.getSeatType(),seatDTO.getSeatNumber(), seatDTO.getFloorNumber())) {
+            model.addAttribute("error", "Seat with this number already exists on the same floor.");
+            model.addAttribute("seat", seatDTO);
+            return "admin-add-seat";
+        }
         if(result.hasErrors()){
             model.addAttribute("seat", seatDTO);
             return "admin-add-seat";

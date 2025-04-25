@@ -11,4 +11,5 @@ public interface ISeatDAO {
     List<Seat> getAllSeats();
     void deleteSeat(Long id);
     List<Seat> getSeatsByType(String seatType);
+    boolean seatExists(String seatType, String seatNumber, int floorNumber);
 }

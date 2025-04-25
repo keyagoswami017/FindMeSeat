@@ -176,6 +176,14 @@ public class SeatReservationController {
                 model.addAttribute("reservationId", id);
                 return "user-edit-reservation";
             }
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            if (start.before(now)) {
+                model.addAttribute("error", "Cannot edit a reservation that has already started.");
+                model.addAttribute("reservation", reservationDTO);
+                model.addAttribute("reservationId", id);
+                return "user-edit-reservation";
+            }
+
 
             if (!seatReservationService.isSeatAvailableForUpdate(reservationDTO.getSid(), start, end,id)) {
                 model.addAttribute("error", "Seat is not available for the selected time.");
@@ -209,11 +217,18 @@ public class SeatReservationController {
     }
 
     @GetMapping("/cancel/{id}")
-    public String cancelReservation(@PathVariable Long id, HttpSession session) {
+    public String cancelReservation(@PathVariable Long id, HttpSession session,Model model) {
         if (session.getAttribute("userId") == null)
             return "redirect:/login";
         Integer userId = (Integer) session.getAttribute("userId");
         Reservation reservation = seatReservationService.getReservationById(id);
+
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        if (reservation.getStartDateTime().before(now)) {
+            model.addAttribute("error", "Cannot cancel a reservation that has already started.");
+            return "redirect:/reservations/user";
+        }
 
         if(!reservation.getUser().getId().equals(Long.valueOf(userId)))
             return "redirect:/access-denied";
@@ -221,6 +236,28 @@ public class SeatReservationController {
         seatReservationService.deleteReservation(id);
         return "redirect:/reservations/user";
     }
+
+    @GetMapping("/past")
+    public String showPastReservations(HttpSession session, Model model) {
+        if (session.getAttribute("userId") == null)
+            return "redirect:/login";
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+        Timestamp oneWeekAgoTimestamp = Timestamp.valueOf(oneWeekAgo);
+
+        List<Reservation> pastReservations = seatReservationService
+                .getReservationsByUserId(Long.valueOf(userId))
+                .stream()
+                .filter(r -> r.getEndDateTime().before(new Timestamp(System.currentTimeMillis()))
+                        && r.getEndDateTime().after(oneWeekAgoTimestamp))
+                .toList();
+
+        model.addAttribute("reservations", pastReservations);
+        model.addAttribute("past", true);
+        return "user-manage-reservations";
+    }
+
 
     @PostMapping("/save-debug")
     public String testDebugPost(HttpServletRequest request) {

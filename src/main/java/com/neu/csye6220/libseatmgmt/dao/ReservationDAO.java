@@ -266,7 +266,7 @@ public class ReservationDAO extends BaseDAO implements IReservationDAO {
                 hql.append(" AND r.seat.seatType = :seatType");
             }
             if (floor != null) {
-                hql.append(" AND r.seat.floor = :floor");
+                hql.append(" AND r.seat.floorNumber = :floor");
             }
 
             var query = getSession().createQuery(hql.toString(), Reservation.class)

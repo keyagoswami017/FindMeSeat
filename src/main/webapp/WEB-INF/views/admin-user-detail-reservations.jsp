@@ -22,6 +22,10 @@
                             <p><strong>Seat:</strong> ${r.seat.seatNumber} (${r.seat.seatType}, Floor ${r.seat.floorNumber})</p>
                             <p><strong>From:</strong> ${r.startDateTime}</p>
                             <p><strong>To:</strong> ${r.endDateTime}</p>
+                            <form action="${pageContext.request.contextPath}/reservations/admin/cancel/${r.id}/user/${user.id}" method="get" class="mt-2">
+                                <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                            </form>
+
                         </div>
                     </div>
                 </c:forEach>

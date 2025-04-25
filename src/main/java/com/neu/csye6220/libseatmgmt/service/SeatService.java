@@ -51,4 +51,9 @@ public class SeatService implements ISeatService {
         return seatDAO.getSeatsByType(seatType);
     }
 
+    @Override
+    public boolean seatExists(String seatType, String seatNumber, int floorNumber){
+        return seatDAO.seatExists(seatType, seatNumber, floorNumber);
+    }
+
 }

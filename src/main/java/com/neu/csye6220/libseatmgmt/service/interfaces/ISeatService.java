@@ -11,4 +11,5 @@ public interface ISeatService {
     Seat getSeatById(Long id);
     List<Seat> getSeatsByType(String seatType);
     List<Seat> getAllSeats();
+    boolean seatExists(String seatType, String seatNumber, int floorNumber);
 }

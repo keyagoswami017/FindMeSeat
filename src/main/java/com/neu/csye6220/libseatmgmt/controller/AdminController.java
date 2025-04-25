@@ -99,12 +99,21 @@ public class AdminController {
         return "admin-user-detail-reservations";
     }
 
+    @GetMapping("/cancel/{id}/user/{userId}")
+    public String cancelUserReservation(@PathVariable Long id, @PathVariable Long userId, HttpSession session) {
+        if (session.getAttribute("adminId") == null)
+            return "redirect:/login";
+        seatReservationService.deleteReservation(id);
+        return "redirect:/reservations/admin/user/view/" + userId;
+    }
+
     @GetMapping("/cancel/{id}")
-    public String cancelReservation(@PathVariable Long id, HttpSession session, Model model) {
+    public String cancelReservation(@PathVariable Long id, HttpSession session) {
         if (session.getAttribute("adminId") == null)
             return "redirect:/login";
         seatReservationService.deleteReservation(id);
         return "redirect:/reservations/admin";
     }
+
 
 }
