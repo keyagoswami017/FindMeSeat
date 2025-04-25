@@ -19,6 +19,7 @@ public class SeatDAO extends BaseDAO implements ISeatDAO {
         // Implementation to save seat to the database
         try {
                 begin();
+                //If seat available then throw seat already exists exception //
                 getSession().persist(seat);
                 commit();
         } catch (HibernateException e) {
@@ -109,6 +110,27 @@ public class SeatDAO extends BaseDAO implements ISeatDAO {
         } catch (HibernateException e) {
             rollback();
             throw new DataAccessException("Error fetching Seats by type: " + seatType, e);
+        } finally {
+            close(); // <<< VERY IMPORTANT
+        }
+    }
+
+    @Override
+    public  boolean seatExists(String seatType, String seatNumber, int floorNumber){
+        try {
+            begin();
+            String hql = "FROM Seat s WHERE s.seatNumber = :seatNumber AND s.floorNumber = :floorNumber AND s.seatType = :seatType";
+            boolean exists = !getSession()
+                    .createQuery(hql, Seat.class)
+                    .setParameter("seatNumber", seatNumber)
+                    .setParameter("floorNumber", floorNumber)
+                    .setParameter("seatType", seatType)
+                    .list().isEmpty();
+            commit();
+            return exists;
+        } catch (HibernateException e) {
+            rollback();
+            throw new DataAccessException("Error checking if seat exists", e);
         } finally {
             close(); // <<< VERY IMPORTANT
         }

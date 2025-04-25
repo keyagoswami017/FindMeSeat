@@ -17,6 +17,9 @@
             <div class="card shadow">
                 <div class="card-body">
                     <h2 class="text-center mb-4">Add New Seat</h2>
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger text-center">${error}</div>
+                    </c:if>
                     <form:form action="${pageContext.request.contextPath}/seat/admin/create" method="post" modelAttribute="seat">
 
                         <div class="mb-3">
